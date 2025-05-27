@@ -4,6 +4,7 @@
 \usepackage{booktabs}
 \usepackage{hyperref}
 \usepackage{geometry}
+\usepackage{minted}
 \geometry{margin=1in}
 
 \title{Deepfake Classification: Project Report}
@@ -21,52 +22,105 @@ This report details the machine learning approaches used for deepfake image clas
 \section{Data Preprocessing and Feature Representation}
 
 \subsection{Feature Extraction}
-I choose to represent image features using color histograms choosing the RGB color space with 256 bins per channel.
+Image features were represented using color histograms for the RGB color space with 256 bins per channel.
 
 Example code for feature extraction:
-\begin{verbatim}
+\begin{minted}[fontsize=\small]{python}
+def get_image_features_from_images(
+    images: np.ndarray,
+) -> np.ndarray:
+    BINS = 256
+    image_features = []
+    for image in images:
+        histogram_red = np.histogram(image[:, :, 0],
+         bins=BINS, range=(0, 256))[0]
+        histogram_green = np.histogram(image[:, :, 1],
+         bins=BINS, range=(0, 256))[0]
+        histogram_blue = np.histogram(image[:, :, 2],
+         bins=BINS, range=(0, 256))[0]
+        histogram = np.concatenate(
+            [histogram_red, histogram_green, histogram_blue]
+            )
+        image_features.append(histogram)
+    return np.array(image_features)
+\end{minted}
 
+Example for how a feature vector looks like (the size of the vector is 256x3 = 768):
+\begin{verbatim}
+[  7   4   3   7   4   4   5   5   3   8   6   6  12   4   7  14   7  10
+   8  10  12   9   6  10   8   8  10   5   5  13  14   7  16   9   7  10
+  14   8  16  10   9   7  14   7   9  13  10  10  13   9   8   6   6   7
+   6   9   5   3   3   7  11   6   9   4   7   6   9   4   7   7  11   7
+   9   8  10   5   8   5   9   7   8   3  12   8   9  11  11  14  12  10
+  11   7  15  16  11  13  10  14  14  22  17  15  23  20  22  30  23  14
+  27  23  22  18  28  22  21  30  19  28  20  23  19  15  20  27  27  20
+  18  22  20  19  29  29  25  21  23  20  24  23  34  34  43  30  55  72
+  98  92  99 102 129 145 154 150 157 160 180 207 222 211 227 247 296 264
+ 258 340 322 346 310 410 373 241 274 258 152  63  26  27  33  18  19  11
+  15   7   6   8  15  10   9  10  11   1  10   4   8   7   5   2   7   6
+   5   8   4   2   5   3   3   6   9   9  20  18  18  26  26  39  33  53
+  66  72  70 102 132 131 105  76  73  52  30  23  14  11   2   2   1   2
+   1   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0
+   0   0   0   0  67  37  33  23  23  23  16  21  21  19  17  13  13  14
+  10  11   6   9  15  10  11   9  12  11   7   8  10   7   8  10   4   5
+   5   5  12  10   6  10   7   8   9   4  11  12  10   6   5   7   8  10
+   7   6   8  14  11   4  10  16  10  13   7  12   7  15   8  12  13  13
+  18  14  21  21  13  11   8  15  22  16  20  17  17  17  29  28  35  30
+  28  31  33  28  16  19  29  26  25  24  20  39  30  31  33  52  49  57
+  85  97 133 112 118 171 192 166 164 175 208 202 206 250 262 270 304 370
+ 353 398 411 339 316 318 345 291 235 129  76  41  32  27  18  23  14  19
+   7   9   9   9   6   5   1   2   4   5   4   5   3   1   4   8   5   7
+   3   5   3   4   1   0   6   6   3   2   8   8   5   8  11  13  18  21
+  22  16  31  27  27  45  55  47  59  80 112 104 117  98  82  56  40  32
+  23  19  14  16  10   3   4   2   2   1   0   0   0   0   0   0   0   0
+   0   0   1   1   0   0   1   0   2   0   0   0   0   0   1   0   1   1
+   1   0   1   0   0   1   0   0   0   0   0   0   0   0   0   0   0   0
+   0   0   0   0   0   0   0   0  36  28  35  38  35  26  27  20  19  26
+  17  14  18  16  19  17  16  19  25  12  16  12  14  18  14  18  18  21
+  20  20  26  26  14  13  18  25  22  26  25  25  28  32  27  29  30  36
+  35  37  29  39  29  35  41  39  43  37  38  30  30  33  47  36  43  46
+  48  48  65  62  77 101 143 148 221 210 221 227 204 249 273 315 328 403
+ 455 515 466 443 368 339 310 266 159  89  48  39  20  16  10  10   8   5
+   6   3   8   3   5   3   3   3   5   1   3   6   3   7   4   5   4   1
+   5   6   7   2   2   5   1   9   1   3   2   3   4   6  13  11  12  21
+  21  14  20  16  22  22  41  32  46  36  51  68  82  90  86  91  89  69
+  57  55  39  20  19  22   8  15   6  15   6   1   4   1   2   1   2   0
+   0   0   0   0   0   0   0   0   1   3   0   0   0   0   1   0   0   0
+   1   0   2   0   1   0   0   0   0   1   0   0   1   1   0   0   1   1
+   1   1   0   0   1   0   0   0   0   1   1   0   0   0   0   0   0   0
+   1   0   1   0   1   2   0   1   0   0   1   1   2   1   0   0   1   0
+   0   0   0   1   0   1   0   0   0   0   0   0]
 \end{verbatim}
 
-Example color histogram for figure \ref{fig:color-histogram}:
-\begin{verbatim}
-import cv2
-import numpy as np
-def extract_color_histogram(image_path):
-    image = cv2.imread(image_path)
-    histogram = cv2.calcHist([image], [0, 1, 2], None, [256, 256, 256], [0, 256, 0, 256, 0, 256])
-    histogram = cv2.normalize(histogram, histogram).flatten()
-    return histogram
-\end{verbatim}
+\textbf{Example color histogram (Figure~\ref{fig:color-histogram}) for Figure~\ref{fig:example-image}:}
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.7\textwidth]{images/color_histogram.png}
+    \includegraphics[width=0.25\textwidth]{images/example_image.png}
+    \caption{Example Image}
+    \label{fig:example-image}
+\end{figure}
+
+\begin{figure}[!h]
+    \centering
+    \includegraphics[width=1\textwidth]{images/color_histogram.png}
     \caption{Example Color Histogram for an Image}
     \label{fig:color-histogram}
 \end{figure}
 
-\subsection{Dataset Overview}
-The dataset consists of images divided into training, validation, and test sets. Each image is labeled as one of five classes.
+
 
 \subsection{Preprocessing Steps}
 \begin{itemize}
-    \item \textbf{Resizing:} All images were resized to a fixed dimension.
-    \item \textbf{Normalization:} Pixel values were normalized to the [0, 1] range.
-    \item \textbf{Flattening:} Images were flattened into 1D vectors for model input.
-    \item \textbf{Augmentation:} (If used, describe augmentations such as flips, rotations, etc.)
+    \item \textbf{Reshaping:} Images were reshaped from a 100*100*3 format to 3 vectors of size 10000, for each color channel (R, G, B).
+    \item \textbf{Feature extraction:} Color histograms were computed into a single vector of size 768 (3* 256 bins per channel) for each image.
+    \item \textbf{Normalization:} Pixel values were normalized using the l2 norm
+          $\|x\|_2 = \sqrt{x_1^2 + x_2^2 + ... + x_n^2}$.
 \end{itemize}
 
 
 \section{Machine Learning Models}
-We tested at least two different models as required:
-
-\subsection{K-Nearest Neighbors (K-NN)}
-\begin{itemize}
-    \item \textbf{Description:} K-NN is a non-parametric method that classifies based on the majority label among the $k$ nearest samples.
-    \item \textbf{Hyperparameters:} Number of neighbors $k$, distance metric.
-    \item \textbf{Implementation:} Used \texttt{sklearn.neighbors.KNeighborsClassifier}.
-\end{itemize}
+The models tested for classification were Support Vector Machine (SVM) and Neural Networks.
 
 \subsection{Support Vector Machine (SVM)}
 \begin{itemize}
@@ -75,25 +129,21 @@ We tested at least two different models as required:
     \item \textbf{Implementation:} Used \texttt{sklearn.svm.SVC}.
 \end{itemize}
 
-\section{Hyperparameter Tuning}
-We performed grid search over key hyperparameters for each model.
-
-\subsection{SVM Hyperparameter Tuning}
+\subsubsection{SVM Hyperparameter Tuning}
 \begin{itemize}
     \item \textbf{Parameter:} $C$ (Regularization)
     \item \textbf{Values tested:} 0.01, 0.1, 1, 10, 100
-    \item \textbf{Performance:} See Table~\ref{tab:svm-tuning} and Figure~\ref{fig:svm-tuning}.
 \end{itemize}
 
 \begin{table}[h]
     \centering
-    \caption{SVM Validation Scores for Different $C$ Values}
+    \caption{SVM Validation Accuracy for Different $C$ Values}
     \label{tab:svm-tuning}
     \begin{tabular}{cccccc}
         \toprule
-        $C$   & 0.01   & 0.1   & 1      & 10     & 100    \\
+        $C$      & 0.01   & 0.1   & 1      & 10     & 100    \\
         \midrule
-        Score & 0.5352 & 0.624 & 0.7296 & 0.7136 & 0.7152 \\
+        Accuracy & 0.5352 & 0.624 & 0.7296 & 0.7136 & 0.7152 \\
         \bottomrule
     \end{tabular}
 \end{table}
@@ -105,20 +155,11 @@ We performed grid search over key hyperparameters for each model.
     \label{fig:svm-tuning}
 \end{figure}
 
-\subsection{K-NN Hyperparameter Tuning}
-\begin{itemize}
-    \item \textbf{Parameter:} $k$ (Number of neighbors)
-    \item \textbf{Values tested:} 1, 3, 5, 7, 9
-    \item \textbf{Performance:} (Insert table/figure with results)
-\end{itemize}
 
-% Add table/figure for K-NN if available
+\subsubsection{Confusion Matrix for SVM (Figure~\ref{fig:svm-cm})}
+The best SVM model was selected with $C=1$ based on validation accuracy.
 
-\section{Results and Evaluation}
-\subsection{Confusion Matrices}
-We report confusion matrices for the validation set for each model.
-
-\begin{figure}[h]
+\begin{figure}[!h]
     \centering
     \includegraphics[width=0.7\textwidth]{images/svm_confusion_matrix.png}
     \caption{Confusion Matrix for SVM Model}
@@ -143,27 +184,7 @@ We report confusion matrices for the validation set for each model.
     \end{tabular}
 \end{table}
 
-\section{Discussion}
-\begin{itemize}
-    \item Discuss the impact of feature choices and preprocessing.
-    \item Compare model performances and discuss why some approaches worked better.
-    \item Document unsuccessful approaches and lessons learned.
-\end{itemize}
-
 \section{Conclusion}
 Summarize findings, best performing model, and possible future improvements.
-
-\section*{Appendix}
-\subsection*{Sample Python Code with Comments}
-\begin{verbatim}
-# Load images and labels
-train_image_dataset = load_images(train_dir)
-# Train SVM model
-model = svm.SVC(C=1)
-model.fit(train_image_dataset.images, train_image_dataset.labels)
-# Evaluate on validation set
-score = model.score(validation_image_dataset.images, validation_image_dataset.labels)
-print(f"Validation Score: {score}")
-\end{verbatim}
 
 \end{document}

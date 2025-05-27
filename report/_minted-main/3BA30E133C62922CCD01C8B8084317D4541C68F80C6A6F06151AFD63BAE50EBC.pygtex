@@ -1,0 +1,19 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{k}{def}\PYG{+w}{ }\PYG{n+nf}{get\PYGZus{}image\PYGZus{}features\PYGZus{}from\PYGZus{}images}\PYG{p}{(}
+    \PYG{n}{images}\PYG{p}{:} \PYG{n}{np}\PYG{o}{.}\PYG{n}{ndarray}\PYG{p}{,}
+\PYG{p}{)} \PYG{o}{\PYGZhy{}\PYGZgt{}} \PYG{n}{np}\PYG{o}{.}\PYG{n}{ndarray}\PYG{p}{:}
+    \PYG{n}{BINS} \PYG{o}{=} \PYG{l+m+mi}{256}
+    \PYG{n}{image\PYGZus{}features} \PYG{o}{=} \PYG{p}{[]}
+    \PYG{k}{for} \PYG{n}{image} \PYG{o+ow}{in} \PYG{n}{images}\PYG{p}{:}
+        \PYG{n}{histogram\PYGZus{}red} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{histogram}\PYG{p}{(}\PYG{n}{image}\PYG{p}{[:,} \PYG{p}{:,} \PYG{l+m+mi}{0}\PYG{p}{],}
+         \PYG{n}{bins}\PYG{o}{=}\PYG{n}{BINS}\PYG{p}{,} \PYG{n+nb}{range}\PYG{o}{=}\PYG{p}{(}\PYG{l+m+mi}{0}\PYG{p}{,} \PYG{l+m+mi}{256}\PYG{p}{))[}\PYG{l+m+mi}{0}\PYG{p}{]}
+        \PYG{n}{histogram\PYGZus{}green} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{histogram}\PYG{p}{(}\PYG{n}{image}\PYG{p}{[:,} \PYG{p}{:,} \PYG{l+m+mi}{1}\PYG{p}{],}
+         \PYG{n}{bins}\PYG{o}{=}\PYG{n}{BINS}\PYG{p}{,} \PYG{n+nb}{range}\PYG{o}{=}\PYG{p}{(}\PYG{l+m+mi}{0}\PYG{p}{,} \PYG{l+m+mi}{256}\PYG{p}{))[}\PYG{l+m+mi}{0}\PYG{p}{]}
+        \PYG{n}{histogram\PYGZus{}blue} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{histogram}\PYG{p}{(}\PYG{n}{image}\PYG{p}{[:,} \PYG{p}{:,} \PYG{l+m+mi}{2}\PYG{p}{],}
+         \PYG{n}{bins}\PYG{o}{=}\PYG{n}{BINS}\PYG{p}{,} \PYG{n+nb}{range}\PYG{o}{=}\PYG{p}{(}\PYG{l+m+mi}{0}\PYG{p}{,} \PYG{l+m+mi}{256}\PYG{p}{))[}\PYG{l+m+mi}{0}\PYG{p}{]}
+        \PYG{n}{histogram} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{concatenate}\PYG{p}{(}
+            \PYG{p}{[}\PYG{n}{histogram\PYGZus{}red}\PYG{p}{,} \PYG{n}{histogram\PYGZus{}green}\PYG{p}{,} \PYG{n}{histogram\PYGZus{}blue}\PYG{p}{]}
+            \PYG{p}{)}
+        \PYG{n}{image\PYGZus{}features}\PYG{o}{.}\PYG{n}{append}\PYG{p}{(}\PYG{n}{histogram}\PYG{p}{)}
+    \PYG{k}{return} \PYG{n}{np}\PYG{o}{.}\PYG{n}{array}\PYG{p}{(}\PYG{n}{image\PYGZus{}features}\PYG{p}{)}
+\end{Verbatim}
