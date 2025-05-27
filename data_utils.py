@@ -2,7 +2,6 @@ from sklearn import preprocessing
 import os
 from PIL import Image
 import numpy as np
-from numpy.core.umath import ndarray
 from image_dataset import ImageDataset
 import image_dataset
 
@@ -19,7 +18,7 @@ def get_image_ids_and_labels(directory: str) -> tuple[np.ndarray, np.ndarray]:
 
 def load_images_from_directory(
     directory: str,
-    percet: float = 1.0,
+    percent: float = 1.0,
 ) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
     image_ids, image_labels = get_image_ids_and_labels(directory)
     images: np.ndarray = []
@@ -29,7 +28,7 @@ def load_images_from_directory(
         img = Image.open(img_path).convert("RGB")
         img_np = np.array(img)
         images.append(img_np)
-        if len(images) / len(image_ids) >= percet:
+        if len(images) / len(image_ids) >= percent:
             break
 
     # images = images[: int(len(images) * percet)]
@@ -40,11 +39,11 @@ def load_images_from_directory(
 
 
 def preprocess_images(images: np.ndarray) -> np.ndarray:
-    def reshape_images(images: ndarray) -> ndarray:
+    def reshape_images(images: np.ndarray) -> np.ndarray:
         images = images.reshape((images.shape[0], -1))
         return images
 
-    def normalize_images(images: ndarray) -> ndarray:
+    def normalize_images(images: np.ndarray) -> np.ndarray:
         return preprocessing.normalize(images, norm="l2")
 
     images = reshape_images(images)
@@ -52,12 +51,40 @@ def preprocess_images(images: np.ndarray) -> np.ndarray:
     return images
 
 
-def load_images(
-    directory: str, percent: float = 1.0
-) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
-    images, image_ids, image_labels = load_images_from_directory(directory, percent)
+def load_images(directory: str, percent: float = 1.0):
+    if directory == "test":
+        images, image_ids, image_labels = load_test_images(percent)
+    else:
+        images, image_ids, image_labels = load_images_from_directory(directory, percent)
+
     images = preprocess_images(images)
 
     image_dataset = ImageDataset(images=images, labels=image_labels, ids=image_ids)
 
     return image_dataset
+
+
+def load_test_images(percent: float = 1.0) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
+    image_ids = np.loadtxt("test.csv", dtype=str)[1:]
+    images: np.ndarray = []
+
+    for image_id in image_ids:
+        img_path = os.path.join("test", image_id + ".png")
+        img = Image.open(img_path).convert("RGB")
+        img_np = np.array(img)
+        images.append(img_np)
+        if len(images) / len(image_ids) >= percent:
+            break
+
+    return np.stack(images), image_ids, None
+
+    # images, image_ids, _ = load_images_from_directory(directory, percent)
+    # images = preprocess_images(images)
+
+    # image_dataset = ImageDataset(images=images, ids=image_ids)
+
+    # return image_dataset
+
+
+image_dataset = load_images("test", percent=1.0)
+print(image_dataset)

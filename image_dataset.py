@@ -21,3 +21,6 @@ class ImageDataset:
             return self.images[idx], self.ids[idx]
         else:
             return self.images[idx]
+
+    def __repr__(self):
+        return f"ImageDataset(images={self.images.shape}, labels={self.labels.shape if self.labels is not None else None}, ids={self.ids.shape if self.ids is not None else None})"
