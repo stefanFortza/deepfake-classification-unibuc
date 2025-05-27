@@ -1,1 +1,42 @@
-model_svm.skops
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# Python cache and virtual environment
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+env/
+venv/
+ENV/
+.venv/
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Model files
+*.h5
+*.hdf5
+*.pkl
+*.joblib
+*.skops
+
+# Logs and outputs
+*.log
+
+# VSCode settings
+.vscode/
+
+# LaTeX files
+*.aux
+*.log
+*.out
+*.toc
+*.lof
+*.lot
+*.fls
+*.fdb_latexmk
+*.synctex.gz
+*.bbl
+*.blg

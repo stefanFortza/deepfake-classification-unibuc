@@ -9,6 +9,17 @@ class ImageDataset:
         self.labels = labels
         self.ids = ids
 
+    def get_image_by_id(self, image_id: str):
+        if self.ids is None:
+            raise ValueError("Image IDs are not available in this dataset.")
+
+        idx = np.where(self.ids == image_id)[0]
+        if idx.size == 0:
+            raise ValueError(f"Image ID {image_id} not found in the dataset.")
+        return self.images[idx[0]], (
+            self.labels[idx[0]] if self.labels is not None else None
+        )
+
     def __len__(self):
         return len(self.images)
 

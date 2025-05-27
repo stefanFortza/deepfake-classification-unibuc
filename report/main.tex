@@ -1,0 +1,169 @@
+\documentclass[a4paper,12pt]{article}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{booktabs}
+\usepackage{hyperref}
+\usepackage{geometry}
+\geometry{margin=1in}
+
+\title{Deepfake Classification: Project Report}
+\author{Țacu Darius-Ștefan \\
+        \ Group: 231}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\section{Introduction}
+This report details the machine learning approaches used for deepfake image classification. We describe the chosen feature sets, data preprocessing, tested models, hyperparameter tuning, and present results with confusion matrices and performance tables/figures.
+
+\section{Data Preprocessing and Feature Representation}
+
+\subsection{Feature Extraction}
+I choose to represent image features using color histograms choosing the RGB color space with 256 bins per channel.
+
+Example code for feature extraction:
+\begin{verbatim}
+
+\end{verbatim}
+
+Example color histogram for figure \ref{fig:color-histogram}:
+\begin{verbatim}
+import cv2
+import numpy as np
+def extract_color_histogram(image_path):
+    image = cv2.imread(image_path)
+    histogram = cv2.calcHist([image], [0, 1, 2], None, [256, 256, 256], [0, 256, 0, 256, 0, 256])
+    histogram = cv2.normalize(histogram, histogram).flatten()
+    return histogram
+\end{verbatim}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.7\textwidth]{images/color_histogram.png}
+    \caption{Example Color Histogram for an Image}
+    \label{fig:color-histogram}
+\end{figure}
+
+\subsection{Dataset Overview}
+The dataset consists of images divided into training, validation, and test sets. Each image is labeled as one of five classes.
+
+\subsection{Preprocessing Steps}
+\begin{itemize}
+    \item \textbf{Resizing:} All images were resized to a fixed dimension.
+    \item \textbf{Normalization:} Pixel values were normalized to the [0, 1] range.
+    \item \textbf{Flattening:} Images were flattened into 1D vectors for model input.
+    \item \textbf{Augmentation:} (If used, describe augmentations such as flips, rotations, etc.)
+\end{itemize}
+
+
+\section{Machine Learning Models}
+We tested at least two different models as required:
+
+\subsection{K-Nearest Neighbors (K-NN)}
+\begin{itemize}
+    \item \textbf{Description:} K-NN is a non-parametric method that classifies based on the majority label among the $k$ nearest samples.
+    \item \textbf{Hyperparameters:} Number of neighbors $k$, distance metric.
+    \item \textbf{Implementation:} Used \texttt{sklearn.neighbors.KNeighborsClassifier}.
+\end{itemize}
+
+\subsection{Support Vector Machine (SVM)}
+\begin{itemize}
+    \item \textbf{Description:} SVM finds the optimal hyperplane to separate classes in feature space.
+    \item \textbf{Hyperparameters:} Regularization parameter $C$, kernel type.
+    \item \textbf{Implementation:} Used \texttt{sklearn.svm.SVC}.
+\end{itemize}
+
+\section{Hyperparameter Tuning}
+We performed grid search over key hyperparameters for each model.
+
+\subsection{SVM Hyperparameter Tuning}
+\begin{itemize}
+    \item \textbf{Parameter:} $C$ (Regularization)
+    \item \textbf{Values tested:} 0.01, 0.1, 1, 10, 100
+    \item \textbf{Performance:} See Table~\ref{tab:svm-tuning} and Figure~\ref{fig:svm-tuning}.
+\end{itemize}
+
+\begin{table}[h]
+    \centering
+    \caption{SVM Validation Scores for Different $C$ Values}
+    \label{tab:svm-tuning}
+    \begin{tabular}{cccccc}
+        \toprule
+        $C$   & 0.01   & 0.1   & 1      & 10     & 100    \\
+        \midrule
+        Score & 0.5352 & 0.624 & 0.7296 & 0.7136 & 0.7152 \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.7\textwidth]{images/svm_tuning.png}
+    \caption{Validation Score vs. $C$ for SVM}
+    \label{fig:svm-tuning}
+\end{figure}
+
+\subsection{K-NN Hyperparameter Tuning}
+\begin{itemize}
+    \item \textbf{Parameter:} $k$ (Number of neighbors)
+    \item \textbf{Values tested:} 1, 3, 5, 7, 9
+    \item \textbf{Performance:} (Insert table/figure with results)
+\end{itemize}
+
+% Add table/figure for K-NN if available
+
+\section{Results and Evaluation}
+\subsection{Confusion Matrices}
+We report confusion matrices for the validation set for each model.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.7\textwidth]{images/svm_confusion_matrix.png}
+    \caption{Confusion Matrix for SVM Model}
+    \label{fig:svm-cm}
+\end{figure}
+
+% Add confusion matrix for K-NN if available
+
+\subsection{Performance Comparison}
+\begin{table}[h]
+    \centering
+    \caption{Validation Accuracy for Different Models}
+    \label{tab:model-compare}
+    \begin{tabular}{lcc}
+        \toprule
+        Model & Best Hyperparameters & Validation Accuracy \\
+        \midrule
+        SVM   & $C=1$                & 0.7296              \\
+        K-NN  & $k=5$                & (insert value)      \\
+        % Add more models if used
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\section{Discussion}
+\begin{itemize}
+    \item Discuss the impact of feature choices and preprocessing.
+    \item Compare model performances and discuss why some approaches worked better.
+    \item Document unsuccessful approaches and lessons learned.
+\end{itemize}
+
+\section{Conclusion}
+Summarize findings, best performing model, and possible future improvements.
+
+\section*{Appendix}
+\subsection*{Sample Python Code with Comments}
+\begin{verbatim}
+# Load images and labels
+train_image_dataset = load_images(train_dir)
+# Train SVM model
+model = svm.SVC(C=1)
+model.fit(train_image_dataset.images, train_image_dataset.labels)
+# Evaluate on validation set
+score = model.score(validation_image_dataset.images, validation_image_dataset.labels)
+print(f"Validation Score: {score}")
+\end{verbatim}
+
+\end{document}
