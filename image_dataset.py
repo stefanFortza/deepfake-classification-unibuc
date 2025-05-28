@@ -1,4 +1,5 @@
 import numpy as np
+import torch
 
 
 class ImageDataset:
@@ -19,6 +20,15 @@ class ImageDataset:
         return self.images[idx[0]], (
             self.labels[idx[0]] if self.labels is not None else None
         )
+
+    def get_images_tensor(self):
+        return torch.tensor(self.images, dtype=torch.float32)
+
+    def get_labels_tensor(self):
+        if self.labels is not None:
+            return torch.tensor(self.labels, dtype=torch.long)
+        else:
+            return torch.zeros((self.images.shape[0],), dtype=torch.long)
 
     def __len__(self):
         return len(self.images)
