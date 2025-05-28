@@ -1,0 +1,68 @@
+% CNN Section
+
+\subsection{Convolutional Neural Network (CNN)}
+\begin{itemize}
+    \item \textbf{Description:} Convolutional Neural Networks (CNNs) are deep learning models designed to process data with a grid-like topology, such as images. They use convolutional layers to automatically learn spatial hierarchies of features from input images.
+    \item \textbf{Hyperparameters:} Number of layers, filter sizes, learning rate, batch size, dropout rate, optimizer.
+    \item \textbf{Implementation:} Implemented using PyTorch's \texttt{nn.Module} and trained with the Adam optimizer.
+\end{itemize}
+
+% Add CNN training/validation results, confusion matrix, and any relevant figures or tables here.
+
+\subsubsection{CNN hyperparameter tuning}
+\begin{itemize}
+\item \textbf{Parameters Tuned:} Number of epochs, learning rate.
+
+% Example placeholder for CNN results:
+\begin{table}[h]
+    \centering
+    \caption{CNN Validation Accuracy for Different Epochs}
+    \label{tab:cnn-tuning}
+    \begin{tabular}{cccc}
+        \toprule
+        Epochs   & 5    & 10   & 20   \\
+        \midrule
+        Accuracy & 0.70 & 0.75 & 0.78 \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+% CNN learning rate tuning results
+\begin{table}[h]
+    \centering
+    \caption{CNN Validation Accuracy for Different Learning Rates}
+    \label{tab:cnn-lr-tuning}
+    \begin{tabular}{cc}
+        \toprule
+        Learning Rate & Validation Accuracy (\%) \\
+        \midrule
+        0.1           & 74.8                     \\
+        0.01          & 76.1                     \\
+        0.001         & 74.5                     \\
+        0.0001        & 80.0                     \\
+        0.00001       & 79.9                     \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.7\textwidth]{images/cnn_lr.png}
+    \caption{Validation accuracy for different learning rates.}
+    \label{fig:cnn-lr}
+\end{figure}
+
+% [h]
+%     \centering
+%     \includegraphics[width=0.7\textwidth]{images/cnn_training_curve.png}
+%     \caption{CNN Training and Validation Accuracy over Epochs}
+%     \label{fig:cnn-training}
+% \end{figure}
+
+% \begin{figure}[!h]
+%     \centering
+%     \includegraphics[width=0.7\textwidth]{images/cnn_confusion_matrix.png}
+%     \caption{Confusion Matrix for CNN Model}
+%     \label{fig:cnn-cm}
+% \end{figure}

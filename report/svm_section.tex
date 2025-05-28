@@ -1,0 +1,64 @@
+% SVM Section
+
+The models tested for classification were Support Vector Machine (SVM) and Neural Networks.
+
+\subsection{Support Vector Machine (SVM)}
+\begin{itemize}
+    \item \textbf{Description:} SVM finds the optimal hyperplane to separate classes in feature space.
+    \item \textbf{Hyperparameters:} Regularization parameter $C$, kernel type.
+    \item \textbf{Implementation:} Used \texttt{sklearn.svm.SVC}.
+\end{itemize}
+
+\subsubsection{SVM Hyperparameter Tuning}
+\begin{itemize}
+    \item \textbf{Parameter:} $C$ (Regularization)
+    \item \textbf{Values tested:} 0.01, 0.1, 1, 10, 100
+\end{itemize}
+
+\begin{table}[h]
+    \centering
+    \caption{SVM Validation Accuracy for Different $C$ Values}
+    \label{tab:svm-tuning}
+    \begin{tabular}{cccccc}
+        \toprule
+        $C$      & 0.01   & 0.1   & 1      & 10     & 100    \\
+        \midrule
+        Accuracy & 0.5352 & 0.624 & 0.7296 & 0.7136 & 0.7152 \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.7\textwidth]{images/svm_tuning.png}
+    \caption{Validation Score vs. $C$ for SVM}
+    \label{fig:svm-tuning}
+\end{figure}
+
+\subsubsection{Confusion Matrix for SVM (Figure~\ref{fig:svm-cm})}
+The best SVM model was selected with $C=1$ based on validation accuracy.
+
+\begin{figure}[!h]
+    \centering
+    \includegraphics[width=0.7\textwidth]{images/svm_confusion_matrix.png}
+    \caption{Confusion Matrix for SVM Model}
+    \label{fig:svm-cm}
+\end{figure}
+
+% Add confusion matrix for K-NN if available
+
+\subsection{Performance Comparison}
+\begin{table}[h]
+    \centering
+    \caption{Validation Accuracy for Different Models}
+    \label{tab:model-compare}
+    \begin{tabular}{lcc}
+        \toprule
+        Model & Best Hyperparameters & Validation Accuracy \\
+        \midrule
+        SVM   & $C=1$                & 0.7296              \\
+        K-NN  & $k=5$                & (insert value)      \\
+        % Add more models if used
+        \bottomrule
+    \end{tabular}
+\end{table}
