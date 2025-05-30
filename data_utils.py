@@ -68,14 +68,13 @@ def load_images_from_directory(
 
 
 def preprocess_images(
-    images: np.ndarray, scaler: preprocessing.StandardScaler = None
+    images: np.ndarray,
+    scaler: preprocessing.StandardScaler = None,
+    for_cnn: bool = False,
 ) -> np.ndarray:
     def reshape_images(images: np.ndarray) -> np.ndarray:
         images = images.reshape((images.shape[0], -1))
         return images
-
-    def normalize_images(images: np.ndarray) -> np.ndarray:
-        return preprocessing.normalize(images, norm="l2")
 
     if scaler is None:
         # If no scaler is provided, we create a new one
@@ -85,14 +84,17 @@ def preprocess_images(
     images = reshape_images(images)
 
     images = scaler.fit_transform(images)
-    # images = images.reshape((images.shape[0], 100, 100, 3))
+    if for_cnn:
+        images = images.reshape((images.shape[0], 100, 100, 3))
 
-    # images = normalize_images(images)
     return images
 
 
 def load_images(
-    directory: str, percent: float = 1.0, scaler: preprocessing.StandardScaler = None
+    directory: str,
+    percent: float = 1.0,
+    scaler: preprocessing.StandardScaler = None,
+    for_cnn: bool = False,
 ):
     # The test data has no labels so we load it separately
     if directory == "test":
@@ -101,7 +103,8 @@ def load_images(
         images, image_ids, image_labels = load_images_from_directory(directory, percent)
 
     image_features = images
-    image_features = get_image_features_from_images(np.array(images))
+    if not for_cnn:
+        image_features = get_image_features_from_images(np.array(images))
     image_features = preprocess_images(image_features, scaler)
 
     image_dataset = ImageDataset(
