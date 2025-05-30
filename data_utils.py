@@ -6,7 +6,9 @@ from image_dataset import ImageDataset
 import image_dataset
 
 
+# Gets the image ids and labes form a specific directory
 def get_image_ids_and_labels(directory: str) -> tuple[np.ndarray, np.ndarray]:
+    # Here we extract the data from the csv as a np matrix
     ids_and_labels = np.loadtxt(directory + ".csv", delimiter=",", dtype=str)
     ids_and_labels = ids_and_labels[1:]
 
@@ -21,6 +23,8 @@ def get_image_features_from_images(
 ) -> np.ndarray:
     BINS = 256
     image_features = []
+
+    # For each color channel we extract the coresponding histogram
     for image in images:
         histogram_red = np.histogram(image[:, :, 0], bins=BINS, range=(0, 256))[0]
         histogram_green = np.histogram(image[:, :, 1], bins=BINS, range=(0, 256))[0]
@@ -36,6 +40,8 @@ def get_images_from_directory_by_ids(
     percent: float = 1.0,
 ) -> np.ndarray:
     images = []
+
+    # For each id we load the photo in the RGB format and convert it to a numpy array
     for image_id in image_ids:
         img_path = os.path.join(directory, image_id + ".png")
         img = Image.open(img_path).convert("RGB")
@@ -54,6 +60,7 @@ def load_images_from_directory(
 
     images = get_images_from_directory_by_ids(directory, image_ids, percent)
 
+    # Here we load only the required percent of labels and ids
     image_labels = image_labels[: len(images)]
     image_ids = image_ids[: len(images)]
 
@@ -70,6 +77,7 @@ def preprocess_images(images: np.ndarray) -> np.ndarray:
 
     scaler = preprocessing.StandardScaler()
 
+    # We scale the images using the standard scaler
     images = reshape_images(images)
 
     images = scaler.fit_transform(images)
@@ -80,6 +88,7 @@ def preprocess_images(images: np.ndarray) -> np.ndarray:
 
 
 def load_images(directory: str, percent: float = 1.0):
+    # The test data has no labels so we load it separately
     if directory == "test":
         images, image_ids, image_labels = load_test_images(percent)
     else:
@@ -103,6 +112,7 @@ def load_test_images(percent: float = 1.0) -> tuple[np.ndarray, np.ndarray, np.n
     return np.stack(images), image_ids, None
 
 
+# The predictions are saved using the default python file stream
 def save_predictions_to_csv(
     predictions: np.ndarray, image_ids: np.ndarray, output_file: str = "submission.csv"
 ):

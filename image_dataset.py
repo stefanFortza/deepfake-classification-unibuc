@@ -2,6 +2,7 @@ import numpy as np
 import torch
 
 
+# Class used for storing the images data
 class ImageDataset:
     def __init__(
         self, images: np.ndarray, labels: np.ndarray = None, ids: np.ndarray = None
@@ -21,6 +22,7 @@ class ImageDataset:
             self.labels[idx[0]] if self.labels is not None else None
         )
 
+    # Getters for converting from numpy array to tensors
     def get_images_tensor(self):
         return torch.tensor(self.images, dtype=torch.float32)
 
@@ -33,6 +35,7 @@ class ImageDataset:
     def __len__(self):
         return len(self.images)
 
+    # Doing image_dataset[i] gets the images, labels, ids as a tuple
     def __getitem__(self, idx):
         if self.labels is not None and self.ids is not None:
             return self.images[idx], self.labels[idx], self.ids[idx]

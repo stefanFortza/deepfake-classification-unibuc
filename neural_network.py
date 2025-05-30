@@ -69,6 +69,7 @@ class NeuralNetwork(nn.Module):
         return x
 
 
+# Creates a dataloader based on the image_dataset
 def get_dataloader_from_image_dataset(
     image_dataset: ImageDataset, batch_size: int, is_test: bool = False
 ):
