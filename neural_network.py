@@ -6,10 +6,11 @@ from data_utils import ImageDataset
 
 from torch.utils.data import DataLoader, TensorDataset
 
+
 class NeuralNetwork(nn.Module):
     def __init__(self):
         super().__init__()
-        
+
         # Define the relu function
         self.relu_fn = nn.ReLU()
 
@@ -19,23 +20,26 @@ class NeuralNetwork(nn.Module):
         # Define dropout function
         self.dropout_fn = nn.Dropout(0.5)
 
-        # Image has shape: 3 x 100 x 100 
+        # Image has shape: 3 x 100 x 100
 
         # Layer 1
         self.conv1 = nn.Conv2d(in_channels=3, out_channels=32, kernel_size=3, padding=1)
         self.bn1_conv = nn.BatchNorm2d(32)
-        self.pool1 = nn.MaxPool2d(kernel_size=2, stride=2) # Output: 32 x 50 x 50
+        self.pool1 = nn.MaxPool2d(kernel_size=2, stride=2)  # Output: 32 x 50 x 50
 
         # Layer 2
-        self.conv2 = nn.Conv2d(in_channels=32, out_channels=64, kernel_size=3, padding=1)
+        self.conv2 = nn.Conv2d(
+            in_channels=32, out_channels=64, kernel_size=3, padding=1
+        )
         self.bn2_conv = nn.BatchNorm2d(64)
-        self.pool2 = nn.MaxPool2d(kernel_size=2, stride=2) # Output: 64 x 25 x 25
+        self.pool2 = nn.MaxPool2d(kernel_size=2, stride=2)  # Output: 64 x 25 x 25
 
         # Layer 3
-        self.conv3 = nn.Conv2d(in_channels=64, out_channels=128, kernel_size=3, padding=1)
+        self.conv3 = nn.Conv2d(
+            in_channels=64, out_channels=128, kernel_size=3, padding=1
+        )
         self.bn3_conv = nn.BatchNorm2d(128)
-        self.pool3 = nn.MaxPool2d(kernel_size=2, stride=2) # Output: 128 x 12 x 12 
-
+        self.pool3 = nn.MaxPool2d(kernel_size=2, stride=2)  # Output: 128 x 12 x 12
 
         # Neural Network Layers (Fully Connected Layers)
         # The input is the output of the last convolutional layer
@@ -47,7 +51,7 @@ class NeuralNetwork(nn.Module):
         self.bn2_fc = nn.BatchNorm1d(256)
         self.dropout2 = nn.Dropout(0.5)
 
-        self.output_layer = nn.Linear(256, 5) # Assuming 5 output classes
+        self.output_layer = nn.Linear(256, 5)  # Assuming 5 output classes
 
     def forward(self, x):
         # Convolutional layers
@@ -63,8 +67,6 @@ class NeuralNetwork(nn.Module):
         x = self.dropout_fn(self.relu_fn(self.bn2_fc(self.fc2(x))))
         x = self.output_layer(x)
         return x
-
-
 
 
 def get_dataloader_from_image_dataset(

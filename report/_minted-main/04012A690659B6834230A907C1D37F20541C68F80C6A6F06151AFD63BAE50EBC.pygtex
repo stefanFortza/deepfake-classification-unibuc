@@ -1,0 +1,65 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{k}{def}\PYG{+w}{ }\PYG{n+nf}{get\PYGZus{}image\PYGZus{}features\PYGZus{}from\PYGZus{}images}\PYG{p}{(}
+    \PYG{n}{images}\PYG{p}{:} \PYG{n}{np}\PYG{o}{.}\PYG{n}{ndarray}\PYG{p}{,}
+\PYG{p}{)} \PYG{o}{\PYGZhy{}\PYGZgt{}} \PYG{n}{np}\PYG{o}{.}\PYG{n}{ndarray}\PYG{p}{:}
+\PYG{k}{class}\PYG{+w}{ }\PYG{n+nc}{NeuralNetwork}\PYG{p}{(}\PYG{n}{nn}\PYG{o}{.}\PYG{n}{Module}\PYG{p}{):}
+    \PYG{k}{def}\PYG{+w}{ }\PYG{n+nf+fm}{\PYGZus{}\PYGZus{}init\PYGZus{}\PYGZus{}}\PYG{p}{(}\PYG{n+nb+bp}{self}\PYG{p}{):}
+        \PYG{n+nb}{super}\PYG{p}{()}\PYG{o}{.}\PYG{n+nf+fm}{\PYGZus{}\PYGZus{}init\PYGZus{}\PYGZus{}}\PYG{p}{()}
+
+        \PYG{c+c1}{\PYGZsh{} Define the relu function}
+        \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{relu\PYGZus{}fn} \PYG{o}{=} \PYG{n}{nn}\PYG{o}{.}\PYG{n}{ReLU}\PYG{p}{()}
+
+        \PYG{c+c1}{\PYGZsh{} Define flannten function}
+        \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{flatten} \PYG{o}{=} \PYG{n}{nn}\PYG{o}{.}\PYG{n}{Flatten}\PYG{p}{()}
+
+        \PYG{c+c1}{\PYGZsh{} Define dropout function}
+        \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{dropout\PYGZus{}fn} \PYG{o}{=} \PYG{n}{nn}\PYG{o}{.}\PYG{n}{Dropout}\PYG{p}{(}\PYG{l+m+mf}{0.5}\PYG{p}{)}
+
+        \PYG{c+c1}{\PYGZsh{} Image has shape: 3 x 100 x 100}
+
+        \PYG{c+c1}{\PYGZsh{} Layer 1}
+        \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{conv1} \PYG{o}{=} \PYG{n}{nn}\PYG{o}{.}\PYG{n}{Conv2d}\PYG{p}{(}\PYG{n}{in\PYGZus{}channels}\PYG{o}{=}\PYG{l+m+mi}{3}\PYG{p}{,} \PYG{n}{out\PYGZus{}channels}\PYG{o}{=}\PYG{l+m+mi}{32}\PYG{p}{,} \PYG{n}{kernel\PYGZus{}size}\PYG{o}{=}\PYG{l+m+mi}{3}\PYG{p}{,} \PYG{n}{padding}\PYG{o}{=}\PYG{l+m+mi}{1}\PYG{p}{)}
+        \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{bn1\PYGZus{}conv} \PYG{o}{=} \PYG{n}{nn}\PYG{o}{.}\PYG{n}{BatchNorm2d}\PYG{p}{(}\PYG{l+m+mi}{32}\PYG{p}{)}
+        \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{pool1} \PYG{o}{=} \PYG{n}{nn}\PYG{o}{.}\PYG{n}{MaxPool2d}\PYG{p}{(}\PYG{n}{kernel\PYGZus{}size}\PYG{o}{=}\PYG{l+m+mi}{2}\PYG{p}{,} \PYG{n}{stride}\PYG{o}{=}\PYG{l+m+mi}{2}\PYG{p}{)}  \PYG{c+c1}{\PYGZsh{} Output: 32 x 50 x 50}
+
+        \PYG{c+c1}{\PYGZsh{} Layer 2}
+        \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{conv2} \PYG{o}{=} \PYG{n}{nn}\PYG{o}{.}\PYG{n}{Conv2d}\PYG{p}{(}
+            \PYG{n}{in\PYGZus{}channels}\PYG{o}{=}\PYG{l+m+mi}{32}\PYG{p}{,} \PYG{n}{out\PYGZus{}channels}\PYG{o}{=}\PYG{l+m+mi}{64}\PYG{p}{,} \PYG{n}{kernel\PYGZus{}size}\PYG{o}{=}\PYG{l+m+mi}{3}\PYG{p}{,} \PYG{n}{padding}\PYG{o}{=}\PYG{l+m+mi}{1}
+        \PYG{p}{)}
+        \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{bn2\PYGZus{}conv} \PYG{o}{=} \PYG{n}{nn}\PYG{o}{.}\PYG{n}{BatchNorm2d}\PYG{p}{(}\PYG{l+m+mi}{64}\PYG{p}{)}
+        \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{pool2} \PYG{o}{=} \PYG{n}{nn}\PYG{o}{.}\PYG{n}{MaxPool2d}\PYG{p}{(}\PYG{n}{kernel\PYGZus{}size}\PYG{o}{=}\PYG{l+m+mi}{2}\PYG{p}{,} \PYG{n}{stride}\PYG{o}{=}\PYG{l+m+mi}{2}\PYG{p}{)}  \PYG{c+c1}{\PYGZsh{} Output: 64 x 25 x 25}
+
+        \PYG{c+c1}{\PYGZsh{} Layer 3}
+        \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{conv3} \PYG{o}{=} \PYG{n}{nn}\PYG{o}{.}\PYG{n}{Conv2d}\PYG{p}{(}
+            \PYG{n}{in\PYGZus{}channels}\PYG{o}{=}\PYG{l+m+mi}{64}\PYG{p}{,} \PYG{n}{out\PYGZus{}channels}\PYG{o}{=}\PYG{l+m+mi}{128}\PYG{p}{,} \PYG{n}{kernel\PYGZus{}size}\PYG{o}{=}\PYG{l+m+mi}{3}\PYG{p}{,} \PYG{n}{padding}\PYG{o}{=}\PYG{l+m+mi}{1}
+        \PYG{p}{)}
+        \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{bn3\PYGZus{}conv} \PYG{o}{=} \PYG{n}{nn}\PYG{o}{.}\PYG{n}{BatchNorm2d}\PYG{p}{(}\PYG{l+m+mi}{128}\PYG{p}{)}
+        \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{pool3} \PYG{o}{=} \PYG{n}{nn}\PYG{o}{.}\PYG{n}{MaxPool2d}\PYG{p}{(}\PYG{n}{kernel\PYGZus{}size}\PYG{o}{=}\PYG{l+m+mi}{2}\PYG{p}{,} \PYG{n}{stride}\PYG{o}{=}\PYG{l+m+mi}{2}\PYG{p}{)}  \PYG{c+c1}{\PYGZsh{} Output: 128 x 12 x 12}
+
+        \PYG{c+c1}{\PYGZsh{} Neural Network Layers (Fully Connected Layers)}
+        \PYG{c+c1}{\PYGZsh{} The input is the output of the last convolutional layer}
+        \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{fc1} \PYG{o}{=} \PYG{n}{nn}\PYG{o}{.}\PYG{n}{Linear}\PYG{p}{(}\PYG{l+m+mi}{128} \PYG{o}{*} \PYG{l+m+mi}{12} \PYG{o}{*} \PYG{l+m+mi}{12}\PYG{p}{,} \PYG{l+m+mi}{512}\PYG{p}{)}
+        \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{bn1\PYGZus{}fc} \PYG{o}{=} \PYG{n}{nn}\PYG{o}{.}\PYG{n}{BatchNorm1d}\PYG{p}{(}\PYG{l+m+mi}{512}\PYG{p}{)}
+        \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{dropout1} \PYG{o}{=} \PYG{n}{nn}\PYG{o}{.}\PYG{n}{Dropout}\PYG{p}{(}\PYG{l+m+mf}{0.5}\PYG{p}{)}
+
+        \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{fc2} \PYG{o}{=} \PYG{n}{nn}\PYG{o}{.}\PYG{n}{Linear}\PYG{p}{(}\PYG{l+m+mi}{512}\PYG{p}{,} \PYG{l+m+mi}{256}\PYG{p}{)}
+        \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{bn2\PYGZus{}fc} \PYG{o}{=} \PYG{n}{nn}\PYG{o}{.}\PYG{n}{BatchNorm1d}\PYG{p}{(}\PYG{l+m+mi}{256}\PYG{p}{)}
+        \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{dropout2} \PYG{o}{=} \PYG{n}{nn}\PYG{o}{.}\PYG{n}{Dropout}\PYG{p}{(}\PYG{l+m+mf}{0.5}\PYG{p}{)}
+
+        \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{output\PYGZus{}layer} \PYG{o}{=} \PYG{n}{nn}\PYG{o}{.}\PYG{n}{Linear}\PYG{p}{(}\PYG{l+m+mi}{256}\PYG{p}{,} \PYG{l+m+mi}{5}\PYG{p}{)}  \PYG{c+c1}{\PYGZsh{} Assuming 5 output classes}
+
+    \PYG{k}{def}\PYG{+w}{ }\PYG{n+nf}{forward}\PYG{p}{(}\PYG{n+nb+bp}{self}\PYG{p}{,} \PYG{n}{x}\PYG{p}{):}
+        \PYG{c+c1}{\PYGZsh{} Convolutional layers}
+        \PYG{n}{x} \PYG{o}{=} \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{pool1}\PYG{p}{(}\PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{relu\PYGZus{}fn}\PYG{p}{(}\PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{bn1\PYGZus{}conv}\PYG{p}{(}\PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{conv1}\PYG{p}{(}\PYG{n}{x}\PYG{p}{))))}
+        \PYG{n}{x} \PYG{o}{=} \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{pool2}\PYG{p}{(}\PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{relu\PYGZus{}fn}\PYG{p}{(}\PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{bn2\PYGZus{}conv}\PYG{p}{(}\PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{conv2}\PYG{p}{(}\PYG{n}{x}\PYG{p}{))))}
+        \PYG{n}{x} \PYG{o}{=} \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{pool3}\PYG{p}{(}\PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{relu\PYGZus{}fn}\PYG{p}{(}\PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{bn3\PYGZus{}conv}\PYG{p}{(}\PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{conv3}\PYG{p}{(}\PYG{n}{x}\PYG{p}{))))}
+
+        \PYG{c+c1}{\PYGZsh{} Flatten}
+        \PYG{n}{x} \PYG{o}{=} \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{flatten}\PYG{p}{(}\PYG{n}{x}\PYG{p}{)}
+
+        \PYG{c+c1}{\PYGZsh{} Fully connected layers}
+        \PYG{n}{x} \PYG{o}{=} \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{dropout\PYGZus{}fn}\PYG{p}{(}\PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{relu\PYGZus{}fn}\PYG{p}{(}\PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{bn1\PYGZus{}fc}\PYG{p}{(}\PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{fc1}\PYG{p}{(}\PYG{n}{x}\PYG{p}{))))}
+        \PYG{n}{x} \PYG{o}{=} \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{dropout\PYGZus{}fn}\PYG{p}{(}\PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{relu\PYGZus{}fn}\PYG{p}{(}\PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{bn2\PYGZus{}fc}\PYG{p}{(}\PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{fc2}\PYG{p}{(}\PYG{n}{x}\PYG{p}{))))}
+        \PYG{n}{x} \PYG{o}{=} \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{output\PYGZus{}layer}\PYG{p}{(}\PYG{n}{x}\PYG{p}{)}
+        \PYG{k}{return} \PYG{n}{x}
+\end{Verbatim}

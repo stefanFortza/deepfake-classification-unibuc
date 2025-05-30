@@ -7,7 +7,87 @@
     \item \textbf{Implementation:} Implemented using PyTorch's \texttt{nn.Module} and trained with the Adam optimizer.
 \end{itemize}
 
-% Add CNN training/validation results, confusion matrix, and any relevant figures or tables here.
+\subsection{CNN Preprocessing}
+\begin{itemize}
+    \item \textbf{Reshaping:} Images were reshaped from a 100*100*3 format to 3*100*100, that means 3 2d vectors for each color channel (R, G B).
+    \item \textbf{Feature extraction:} Color histograms were computed into a single vector of size 768 (3* 256 bins per channel) for each image.
+    \item \textbf{Normalization:} Pixel values were normalized using the l2 norm
+          $\|x\|_2 = \sqrt{x_1^2 + x_2^2 + ... + x_n^2}$.
+\end{itemize}
+
+\subsection{Neural Network Structure}
+\begin{minted}[fontsize=\small]{python}
+def get_image_features_from_images(
+    images: np.ndarray,
+) -> np.ndarray:
+class NeuralNetwork(nn.Module):
+    def __init__(self):
+        super().__init__()
+
+        # Define the relu function
+        self.relu_fn = nn.ReLU()
+
+        # Define flannten function
+        self.flatten = nn.Flatten()
+
+        # Define dropout function
+        self.dropout_fn = nn.Dropout(0.5)
+
+        # Image has shape: 3 x 100 x 100
+
+        # Layer 1
+        self.conv1 = nn.Conv2d(in_channels=3, out_channels=32, kernel_size=3, padding=1)
+        self.bn1_conv = nn.BatchNorm2d(32)
+        self.pool1 = nn.MaxPool2d(kernel_size=2, stride=2)  # Output: 32 x 50 x 50
+
+        # Layer 2
+        self.conv2 = nn.Conv2d(
+            in_channels=32, out_channels=64, kernel_size=3, padding=1
+        )
+        self.bn2_conv = nn.BatchNorm2d(64)
+        self.pool2 = nn.MaxPool2d(kernel_size=2, stride=2)  # Output: 64 x 25 x 25
+
+        # Layer 3
+        self.conv3 = nn.Conv2d(
+            in_channels=64, out_channels=128, kernel_size=3, padding=1
+        )
+        self.bn3_conv = nn.BatchNorm2d(128)
+        self.pool3 = nn.MaxPool2d(kernel_size=2, stride=2)  # Output: 128 x 12 x 12
+
+        # Neural Network Layers (Fully Connected Layers)
+        # The input is the output of the last convolutional layer
+        self.fc1 = nn.Linear(128 * 12 * 12, 512)
+        self.bn1_fc = nn.BatchNorm1d(512)
+        self.dropout1 = nn.Dropout(0.5)
+
+        self.fc2 = nn.Linear(512, 256)
+        self.bn2_fc = nn.BatchNorm1d(256)
+        self.dropout2 = nn.Dropout(0.5)
+
+        self.output_layer = nn.Linear(256, 5)  # Assuming 5 output classes
+
+    def forward(self, x):
+        # Convolutional layers
+        x = self.pool1(self.relu_fn(self.bn1_conv(self.conv1(x))))
+        x = self.pool2(self.relu_fn(self.bn2_conv(self.conv2(x))))
+        x = self.pool3(self.relu_fn(self.bn3_conv(self.conv3(x))))
+
+        # Flatten
+        x = self.flatten(x)
+
+        # Fully connected layers
+        x = self.dropout_fn(self.relu_fn(self.bn1_fc(self.fc1(x))))
+        x = self.dropout_fn(self.relu_fn(self.bn2_fc(self.fc2(x))))
+        x = self.output_layer(x)
+        return x
+\end{minted}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.9\textwidth]{images/neural_network.png}
+    \caption{Neural Network Structure}
+    \label{fig:neural_network}
+\end{figure}
 
 \subsubsection{CNN hyperparameter tuning}
 
