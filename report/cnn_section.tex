@@ -1,19 +1,23 @@
 % CNN Section
 
 \subsection{Convolutional Neural Network (CNN)}
+
 \begin{itemize}
-    \item \textbf{Description:} Convolutional Neural Networks (CNNs) are deep learning models designed to process data with a grid-like topology, such as images. They use convolutional layers to automatically learn spatial hierarchies of features from input images.
-    \item \textbf{Hyperparameters:} Number of layers, filter sizes, learning rate, batch size, dropout rate, optimizer.
-    \item \textbf{Implementation:} Implemented using PyTorch's \texttt{nn.Module} and trained with the Adam optimizer.
+    \item \textbf{Description:} Convolutional Neural Network (CNN) is an advanced version of artificial neural networks (ANNs), primarily designed to extract features from grid-like matrix datasets. This is particularly useful for visual datasets such as images or videos, where data patterns play a crucial role. CNNs are widely used in computer vision applications due to their effectiveness in processing visual data~\cite{bib1}.
+    \item \textbf{Hyperparameters:} Learning rate, number of training epochs.
+    \item \textbf{Implementation:} The main components are the \texttt{NeuralNetwork} class (defining the architecture and forward pass).
 \end{itemize}
 
 \subsection{CNN Preprocessing}
+Before being passed to the neural network, images undergo the following preprocessing steps:
+
 \begin{itemize}
-    \item \textbf{Reshaping:} Images were reshaped from a 100*100*3 format to 3*100*100, that means 3 2d vectors for each color channel (R, G B).
-    \item \textbf{Feature extraction:} Color histograms were computed into a single vector of size 768 (3* 256 bins per channel) for each image.
-    \item \textbf{Normalization:} Pixel values were normalized using the l2 norm
-          $\|x\|_2 = \sqrt{x_1^2 + x_2^2 + ... + x_n^2}$.
+    \item \textbf{Reshaping:} Each image is converted from the standard $100 \times 100 \times 3$ (height, width, RGB channels) format to $3 \times 100 \times 100$, as required by PyTorch's \texttt{Conv2d} layers. This format places the color channels first.
+    \item \textbf{Normalization:} All pixel values are standardized using the dataset mean and standard deviation.
+    \item \textbf{Batching:} Images and their corresponding labels are grouped into batches using a \texttt{DataLoader}, which enables efficient mini-batch training and shuffling of the dataset.
 \end{itemize}
+
+This preprocessing pipeline ensures that the input data is compatible with the PyTorch model defined in \texttt{neural\_network.py} and supports effective training.
 
 \subsection{Neural Network Structure}
 \begin{minted}[fontsize=\small]{python}
@@ -123,7 +127,7 @@ The peak validation accuracy was achieved at a learning rate of 0.0001. After th
 \end{figure}
 
 
-\textbf{Parameter Tuned:} Epochs (see Table~\ref{tab:cnn-tuning}, Table~\ref{tab:cnn-loss-epochs}, and Figure~\ref{fig:cnn-loss})
+\textbf{Parameter Tuned:} Epochs (see Table~\ref{tab:cnn-loss-epochs}, and Figure~\ref{fig:cnn-loss})
 
 The loss is in a steady decline, indicating that the model is learning effectively. The model was stopped at 10 epochs to prevent overfitting.
 
