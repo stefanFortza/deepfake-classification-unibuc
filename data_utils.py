@@ -103,9 +103,11 @@ def load_images(
         images, image_ids, image_labels = load_images_from_directory(directory, percent)
 
     image_features = images
+
     if not for_cnn:
         image_features = get_image_features_from_images(np.array(images))
-    image_features = preprocess_images(image_features, scaler)
+
+    image_features = preprocess_images(image_features, scaler, for_cnn)
 
     image_dataset = ImageDataset(
         images=image_features, labels=image_labels, ids=image_ids
