@@ -10,22 +10,11 @@
 % Add CNN training/validation results, confusion matrix, and any relevant figures or tables here.
 
 \subsubsection{CNN hyperparameter tuning}
-\begin{itemize}
-\item \textbf{Parameters Tuned:} Number of epochs, learning rate.
 
-% Example placeholder for CNN results:
-\begin{table}[h]
-    \centering
-    \caption{CNN Validation Accuracy for Different Epochs}
-    \label{tab:cnn-tuning}
-    \begin{tabular}{cccc}
-        \toprule
-        Epochs   & 5    & 10   & 20   \\
-        \midrule
-        Accuracy & 0.70 & 0.75 & 0.78 \\
-        \bottomrule
-    \end{tabular}
-\end{table}
+\textbf{Parameter Tuned:} Learning rate (see Table~\ref{tab:cnn-lr-tuning} and Figure~\ref{fig:cnn-lr})
+
+The peak validation accuracy was achieved at a learning rate of 0.0001. After this point, the accuracy slightly decreased, indicating that lowering the learning rate further may have led to a steady decrease in accuracy.
+
 
 % CNN learning rate tuning results
 \begin{table}[h]
@@ -53,16 +42,51 @@
     \label{fig:cnn-lr}
 \end{figure}
 
-% [h]
-%     \centering
-%     \includegraphics[width=0.7\textwidth]{images/cnn_training_curve.png}
-%     \caption{CNN Training and Validation Accuracy over Epochs}
-%     \label{fig:cnn-training}
-% \end{figure}
 
-% \begin{figure}[!h]
-%     \centering
-%     \includegraphics[width=0.7\textwidth]{images/cnn_confusion_matrix.png}
-%     \caption{Confusion Matrix for CNN Model}
-%     \label{fig:cnn-cm}
-% \end{figure}
+\textbf{Parameter Tuned:} Epochs (see Table~\ref{tab:cnn-tuning}, Table~\ref{tab:cnn-loss-epochs}, and Figure~\ref{fig:cnn-loss})
+
+The loss is in a steady decline, indicating that the model is learning effectively. The model was stopped at 10 epochs to prevent overfitting.
+
+
+% CNN training loss per epoch
+\begin{table}[h]
+    \centering
+    \caption{CNN Training Loss for Different Epochs}
+    \label{tab:cnn-loss-epochs}
+    \begin{tabular}{cc}
+        \toprule
+        Epoch & Training Loss \\
+        \midrule
+        1     & 0.73          \\
+        2     & 0.52          \\
+        3     & 0.42          \\
+        4     & 0.34          \\
+        5     & 0.30          \\
+        6     & 0.24          \\
+        7     & 0.20          \\
+        8     & 0.17          \\
+        9     & 0.14          \\
+        10    & 0.13          \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+% CNN training loss curve
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.7\textwidth]{images/epoch_loss.png}
+    \caption{Training loss per epoch for the CNN model.}
+    \label{fig:cnn-loss}
+\end{figure}
+
+
+\subsubsection{Confusion Matrix for CNN (Figure~\ref{fig:cnn-cm})}
+For this confusion matrix, the CNN model was trained for 10 epochs with a learning rate of 0.0001.
+
+% CNN confusion matrix
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.7\textwidth]{images/cnn_confusion_matrix.png}
+    \caption{Confusion matrix for the CNN model.}
+    \label{fig:cnn-cm}
+\end{figure}
