@@ -7,7 +7,7 @@ import torch
 # We load the data
 train_dataset, scaler = load_images("train", percent=1)
 test_dataset, _ = load_images("test", percent=1, scaler=scaler)
-validation_dataset, _ = load_images("validation")
+validation_dataset, _ = load_images("validation", percent=1, scaler=scaler)
 
 
 # We get the data in the form of a PyTorch dataset

@@ -85,7 +85,7 @@ def preprocess_images(
     images = reshape_images(images)
 
     images = scaler.fit_transform(images)
-    images = images.reshape((images.shape[0], 100, 100, 3))
+    # images = images.reshape((images.shape[0], 100, 100, 3))
 
     # images = normalize_images(images)
     return images

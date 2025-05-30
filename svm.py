@@ -4,9 +4,9 @@ import matplotlib.pyplot as plt
 
 # Load the data
 train_dir = "train"
-train_image_dataset, scaler = load_images(train_dir)
-validation_image_dataset, scaler = load_images("validation", scaler)
-test_image_dataset, scaler = load_images("test")
+train_image_dataset, scaler = load_images(train_dir, percent=1.0)
+validation_image_dataset, scaler = load_images("validation", percent=1.0, scaler=scaler)
+test_image_dataset, scaler = load_images("test", percent=1.0, scaler=scaler)
 print(f"Loaded {len(train_image_dataset)} images from {train_dir} directory.")
 print(f"Loaded {len(validation_image_dataset)} images from validation directory.")
 print(f"Loaded {len(test_image_dataset)} images from test directory.")
