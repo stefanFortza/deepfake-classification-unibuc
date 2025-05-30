@@ -5,9 +5,11 @@ from neural_network import get_dataloader_from_image_dataset
 import torch
 
 # We load the data
-train_dataset, scaler = load_images("train", percent=1)
-test_dataset, _ = load_images("test", percent=1, scaler=scaler)
-validation_dataset, _ = load_images("validation", percent=1, scaler=scaler)
+train_dataset, scaler = load_images("train", percent=1, for_cnn=True)
+test_dataset, _ = load_images("test", percent=1, scaler=scaler, for_cnn=True)
+validation_dataset, _ = load_images(
+    "validation", percent=1, scaler=scaler, for_cnn=True
+)
 
 
 # We get the data in the form of a PyTorch dataset
