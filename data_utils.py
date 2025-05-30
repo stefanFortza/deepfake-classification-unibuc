@@ -101,7 +101,7 @@ def load_images(
         images, image_ids, image_labels = load_images_from_directory(directory, percent)
 
     image_features = images
-    # image_features = get_image_features_from_images(np.array(images))
+    image_features = get_image_features_from_images(np.array(images))
     image_features = preprocess_images(image_features, scaler)
 
     image_dataset = ImageDataset(
